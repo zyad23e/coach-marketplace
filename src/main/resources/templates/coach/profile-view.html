@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Coach Profile</title>
+    <meta charset="UTF-8">
+</head>
+<body>
+
+<h1>Coach Profile</h1>
+
+<div>
+    <strong>Name:</strong>
+    <span th:text="${profile.displayName}">Name goes here</span>
+</div>
+
+<br>
+
+<div>
+    <strong>Bio:</strong><br>
+    <span th:text="${profile.bio}">Bio goes here</span>
+</div>
+
+<br>
+
+<div>
+    <strong>Hourly Rate:</strong>
+    $<span th:text="${profile.hourlyRate}">0</span>
+</div>
+
+<br>
+
+<div>
+    <strong>Category:</strong>
+    <span th:text="${profile.category}">Category goes here</span>
+</div>
+
+<br><br>
+
+<a href="/coach/profile/new">Create another profile</a>
+
+</body>
+</html>
+>
