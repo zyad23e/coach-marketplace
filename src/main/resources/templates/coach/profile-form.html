@@ -1,10 +1,54 @@
 <!DOCTYPE html>
-<html lang="en">
+<html xmlns:th="http://www.thymeleaf.org">
 <head>
+    <!-- tab name -->
+    <title>Create Coach Profile</title>
     <meta charset="UTF-8">
-    <title>Title</title>
 </head>
 <body>
+
+<h1>Create Coach Profile</h1>
+
+<!-- when Create Profile is clicked, the browser looks at this line and sends a POST
+     request to this endpoint with all these field values. -->
+<form method="POST" action="/coach/profile/new">
+
+    <!-- Coach enters their name here -->
+    <div>
+        <label>Display Name:</label><br>
+        <input type="text" name="displayName" required>
+    </div>
+
+    <br>
+
+    <!-- Coach enters their bio here -->
+    <div>
+        <label>Bio:</label><br>
+        <textarea name="bio" rows="4" cols="40" required></textarea>
+    </div>
+
+    <br>
+
+    <!-- Coach enters their rate here -->
+    <div>
+        <label>Hourly Rate:</label><br>
+        <input type="number" name="hourlyRate" step="0.01" min="0" required>
+    </div>
+
+    <br>
+
+    <!-- Coach enters their specialty here -->
+    <div>
+        <label>Category / Specialty:</label><br>
+        <input type="text" name="category" required>
+    </div>
+
+    <br><br>
+
+    <!-- Coach creates profile here -->
+    <button type="submit">Create Profile</button>
+
+</form>
 
 </body>
 </html>
