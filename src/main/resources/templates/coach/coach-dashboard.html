@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Coach Dashboard</title>
+
+    <style>
+        body{
+            margin:0;
+            font-family: Arial, sans-serif;
+            background:#0b0e17;
+            color:#fff;
+            min-height:100vh;
+        }
+
+        .nav{
+            display:flex;
+            justify-content:space-between;
+            align-items:center;
+            padding:14px 22px;
+            border-bottom:1px solid rgba(255,255,255,0.10);
+            background: rgba(10, 12, 20, 0.55);
+            backdrop-filter: blur(12px);
+        }
+
+        .brand{
+            font-weight:800;
+            letter-spacing:0.2px;
+            font-size:18px;
+        }
+
+        .nav a{
+            color:#fff;
+            text-decoration:none;
+            margin-left:16px;
+            font-weight:600;
+            opacity:.85;
+        }
+
+        .nav a:hover{ opacity:1; }
+
+        .container{
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 28px 20px 40px;
+        }
+
+        .hero{
+            border:1px solid rgba(255,255,255,0.12);
+            background: rgba(255,255,255,0.06);
+            border-radius: 18px;
+            padding: 22px;
+            box-shadow: 0 18px 50px rgba(0,0,0,0.45);
+        }
+
+        h1{
+            margin: 0 0 6px;
+            font-size: 26px;
+        }
+
+        .sub{
+            margin:0;
+            color: rgba(255,255,255,0.65);
+            line-height:1.5;
+        }
+
+        .grid{
+            margin-top: 20px;
+            display:grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 16px;
+        }
+
+        .card{
+            border:1px solid rgba(255,255,255,0.12);
+            background: rgba(255,255,255,0.06);
+            border-radius: 16px;
+            padding: 20px;
+            box-shadow: 0 10px 26px rgba(0,0,0,0.25);
+            transition: transform 160ms ease, background 160ms ease, border 160ms ease;
+            display:flex;
+            flex-direction:column;
+            justify-content:space-between;
+        }
+
+        .card:hover{
+            transform: translateY(-3px);
+            background: rgba(255,255,255,0.09);
+            border-color: rgba(255,255,255,0.22);
+        }
+
+        .card h3{
+            margin: 0 0 8px;
+            font-size: 17px;
+        }
+
+        .card p{
+            margin: 0 0 16px;
+            color: rgba(255,255,255,0.65);
+            line-height:1.5;
+            font-size: 14px;
+        }
+
+        .btn{
+            display:inline-block;
+            padding: 11px 14px;
+            border-radius: 12px;
+            text-decoration:none;
+            font-weight: 800;
+            font-size: 14px;
+            text-align:center;
+            color: #0b0e17;
+            background: linear-gradient(135deg, #7c5cff, #4de0c3);
+        }
+
+        .btn.secondary{
+            background: rgba(255,255,255,0.12);
+            color:#fff;
+            border:1px solid rgba(255,255,255,0.18);
+        }
+
+        .btn.secondary:hover{
+            background: rgba(255,255,255,0.18);
+        }
+
+        .note{
+            margin-top:24px;
+            font-size:13px;
+            color: rgba(255,255,255,0.5);
+            text-align:center;
+        }
+
+        @media (max-width: 900px){
+            .grid{
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<div class="nav">
+    <div class="brand">Coach Dashboard</div>
+    <div>
+        <a href="/coaches">Browse Public</a>
+        <a href="/">Home</a>
+    </div>
+</div>
+
+<div class="container">
+
+    <div class="hero">
+        <h1>Welcome, Coach 👋</h1>
+        <p class="sub">
+            Create and manage your coaching services. Visitors can browse everything you publish without needing an account.
+        </p>
+    </div>
+
+    <div class="grid">
+
+        <div class="card">
+            <div>
+                <h3>Add a Coaching Service</h3>
+                <p>
+                    Post a new service like Tennis lessons, Piano lessons, or Basketball training with full details and pricing.
+                </p>
+            </div>
+            <a class="btn" href="/coach/services/new">Create Service</a>
+        </div>
+
+        <div class="card">
+            <div>
+                <h3>Manage My Services</h3>
+                <p>
+                    View all your posted services. Edit details, update prices, or remove services you no longer offer.
+                </p>
+            </div>
+            <a class="btn secondary" href="/coach/services">My Services</a>
+        </div>
+
+        <div class="card">
+            <div>
+                <h3>Coach Profile (About Me)</h3>
+                <p>
+                    Update your public name, bio, and location so visitors know who you are and where you coach.
+                </p>
+            </div>
+            <a class="btn secondary" href="/coach/profile/new">Edit Profile</a>
+        </div>
+
+    </div>
+
+    <div class="note">
+        Tip: create your profile once, then add as many different coaching services as you want.
+    </div>
+
+</div>
+
+</body>
+</html>

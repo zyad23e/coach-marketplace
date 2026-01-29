@@ -2,7 +2,7 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Create Coach Profile</title>
+    <title>Register as Coach</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <style>
@@ -19,7 +19,7 @@
 
         .card {
             width: 100%;
-            max-width: 520px;
+            max-width: 420px;
             background: #111528;
             border: 1px solid #1e2340;
             border-radius: 16px;
@@ -29,7 +29,7 @@
 
         h1 {
             margin: 0 0 20px;
-            font-size: 24px;
+            font-size: 26px;
             text-align: center;
         }
 
@@ -45,7 +45,7 @@
             color: #bfc7ff;
         }
 
-        input, textarea {
+        input {
             padding: 12px;
             border-radius: 10px;
             border: 1px solid #2a2f55;
@@ -53,15 +53,9 @@
             color: #fff;
             font-size: 14px;
             outline: none;
-            font-family: inherit;
         }
 
-        textarea {
-            resize: vertical;
-            min-height: 100px;
-        }
-
-        input:focus, textarea:focus {
+        input:focus {
             border-color: #6c7bff;
         }
 
@@ -82,45 +76,51 @@
             opacity: 0.95;
         }
 
-        .hint {
-            margin-top: 10px;
-            font-size: 12px;
-            color: #9aa3d8;
+        .footer {
+            margin-top: 14px;
             text-align: center;
+            font-size: 13px;
+            color: #9aa3d8;
+        }
+
+        .footer a {
+            color: #9aa3ff;
+            text-decoration: none;
         }
     </style>
 </head>
 <body>
 
 <div class="card">
-    <h1>Create Your Coach Profile</h1>
+    <h1>Become a Coach</h1>
 
-    <form method="post" action="/coach/profile">
+    <form method="post" action="/register">
         <div class="field">
-            <label>Display Name</label>
-            <input type="text" name="displayName" placeholder="e.g. Phoenix Tennis Pro" required>
+            <label>First Name</label>
+            <input type="text" name="firstName" required>
         </div>
 
         <div class="field">
-            <label>Location</label>
-            <input type="text" name="location" placeholder="e.g. Phoenix, AZ or Remote" required>
+            <label>Last Name</label>
+            <input type="text" name="lastName" required>
         </div>
 
         <div class="field">
-            <label>Hourly Rate ($)</label>
-            <input type="number" step="0.01" name="hourlyRate" placeholder="e.g. 60" required>
+            <label>Email</label>
+            <input type="email" name="email" required>
         </div>
 
         <div class="field">
-            <label>Bio</label>
-            <textarea name="bio" placeholder="Describe your coaching style, experience, and who you help." required></textarea>
+            <label>Password</label>
+            <input type="password" name="password" required>
         </div>
 
-        <button type="submit" class="btn">Publish Profile</button>
+        <button type="submit" class="btn">Create Coach Account</button>
     </form>
 
-    <div class="hint">
-        You can edit this later and add services after creating your profile.
+    <div class="footer">
+        Already have an account?
+        <a href="/login">Login</a>
     </div>
 </div>
 

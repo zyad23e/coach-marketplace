@@ -1,10 +1,454 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Coach Marketplace</title>
 
+    <style>
+        :root{
+          --bg: #070A12;
+          --panel: rgba(255,255,255,0.06);
+          --panel-2: rgba(255,255,255,0.10);
+          --stroke: rgba(255,255,255,0.12);
+          --text: rgba(255,255,255,0.92);
+          --muted: rgba(255,255,255,0.65);
+          --muted2: rgba(255,255,255,0.45);
+          --shadow: 0 18px 50px rgba(0,0,0,0.45);
+          --radius: 18px;
+        }
+
+        * { box-sizing: border-box; }
+        body {
+          margin: 0;
+          font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+          color: var(--text);
+          background: radial-gradient(1200px 600px at 20% 10%, rgba(120, 90, 255, 0.35), transparent 60%),
+                      radial-gradient(900px 600px at 80% 20%, rgba(60, 255, 220, 0.22), transparent 55%),
+                      radial-gradient(700px 450px at 60% 90%, rgba(255, 160, 80, 0.18), transparent 60%),
+                      var(--bg);
+          min-height: 100vh;
+          overflow-x: hidden;
+        }
+
+        .nav {
+          position: sticky;
+          top: 0;
+          z-index: 10;
+          display:flex;
+          justify-content:space-between;
+          align-items:center;
+          padding: 14px 22px;
+          background: rgba(10, 12, 20, 0.55);
+          border-bottom: 1px solid rgba(255,255,255,0.10);
+          backdrop-filter: blur(12px);
+        }
+
+        .brand {
+          display:flex;
+          align-items:center;
+          gap: 10px;
+          font-weight: 800;
+          letter-spacing: 0.2px;
+        }
+        .logo {
+          width: 34px; height: 34px;
+          border-radius: 12px;
+          background: radial-gradient(circle at 30% 20%, rgba(255,255,255,0.9), rgba(255,255,255,0.0) 55%),
+                      linear-gradient(135deg, rgba(120,90,255,0.9), rgba(60,255,220,0.65));
+          box-shadow: 0 12px 30px rgba(120,90,255,0.25);
+          border: 1px solid rgba(255,255,255,0.22);
+        }
+
+        .nav a {
+          color: var(--text);
+          text-decoration: none;
+          margin-left: 14px;
+          font-weight: 600;
+          font-size: 14px;
+          opacity: 0.86;
+        }
+        .nav a:hover { opacity: 1; }
+
+        .container {
+          max-width: 1080px;
+          margin: 0 auto;
+          padding: 46px 20px 30px;
+        }
+
+        .heroWrap {
+          position: relative;
+          border: 1px solid var(--stroke);
+          border-radius: calc(var(--radius) + 10px);
+          background: linear-gradient(180deg, rgba(255,255,255,0.08), rgba(255,255,255,0.03));
+          box-shadow: var(--shadow);
+          overflow: hidden;
+        }
+
+        .heroGlow {
+          position:absolute;
+          inset: -100px -120px auto auto;
+          width: 420px;
+          height: 420px;
+          background: radial-gradient(circle at 30% 30%, rgba(60,255,220,0.32), transparent 60%),
+                      radial-gradient(circle at 70% 60%, rgba(120,90,255,0.30), transparent 55%);
+          filter: blur(8px);
+          opacity: 0.9;
+          transform: rotate(10deg);
+          pointer-events: none;
+        }
+
+        .hero {
+          position: relative;
+          padding: 44px 40px 26px;
+        }
+
+        .badge {
+          display:inline-flex;
+          align-items:center;
+          gap: 10px;
+          padding: 8px 12px;
+          border-radius: 999px;
+          background: rgba(255,255,255,0.08);
+          border: 1px solid rgba(255,255,255,0.14);
+          color: var(--muted);
+          font-weight: 700;
+          font-size: 13px;
+          letter-spacing: 0.2px;
+        }
+
+        .dot {
+          width: 8px; height: 8px; border-radius: 999px;
+          background: rgba(60,255,220,0.9);
+          box-shadow: 0 0 18px rgba(60,255,220,0.55);
+        }
+
+        h1 {
+          margin: 14px 0 12px;
+          font-size: 46px;
+          line-height: 1.05;
+          letter-spacing: -0.9px;
+        }
+        .sub {
+          margin: 0;
+          max-width: 740px;
+          color: var(--muted);
+          line-height: 1.6;
+          font-size: 16px;
+        }
+
+        .actionsRow {
+          margin-top: 20px;
+          display:flex;
+          gap: 12px;
+          flex-wrap: wrap;
+          align-items:center;
+        }
+
+        .btn {
+          display:inline-flex;
+          align-items:center;
+          justify-content:center;
+          gap: 10px;
+          padding: 12px 16px;
+          border-radius: 14px;
+          border: 1px solid rgba(255,255,255,0.18);
+          text-decoration:none;
+          font-weight: 800;
+          font-size: 14px;
+          color: var(--text);
+          background: rgba(255,255,255,0.06);
+          transition: transform 160ms ease, background 160ms ease, border 160ms ease;
+        }
+        .btn:hover {
+          transform: translateY(-1px);
+          background: rgba(255,255,255,0.10);
+          border-color: rgba(255,255,255,0.26);
+        }
+
+        .btn.primary {
+          background: linear-gradient(135deg, rgba(120,90,255,0.95), rgba(60,255,220,0.70));
+          border-color: rgba(255,255,255,0.22);
+          box-shadow: 0 18px 45px rgba(120,90,255,0.18);
+          color: rgba(10,12,20,0.98);
+        }
+        .btn.primary:hover { background: linear-gradient(135deg, rgba(120,90,255,1), rgba(60,255,220,0.80)); }
+
+        .searchRow {
+          margin-top: 22px;
+          display:flex;
+          gap: 12px;
+          flex-wrap: wrap;
+          align-items:center;
+        }
+
+        .searchBox {
+          flex: 1;
+          min-width: 260px;
+          display:flex;
+          align-items:center;
+          gap: 10px;
+          padding: 12px 14px;
+          border-radius: 16px;
+          border: 1px solid rgba(255,255,255,0.14);
+          background: rgba(0,0,0,0.18);
+          backdrop-filter: blur(10px);
+        }
+
+        .searchBox input {
+          width: 100%;
+          border: none;
+          outline: none;
+          background: transparent;
+          color: var(--text);
+          font-size: 14px;
+        }
+        .searchBox input::placeholder { color: rgba(255,255,255,0.45); }
+
+        .pillRow {
+          margin-top: 16px;
+          display:flex;
+          gap: 10px;
+          flex-wrap: wrap;
+        }
+        .pill {
+          padding: 9px 12px;
+          border-radius: 999px;
+          border: 1px solid rgba(255,255,255,0.14);
+          background: rgba(255,255,255,0.06);
+          color: var(--muted);
+          font-weight: 700;
+          font-size: 13px;
+          text-decoration:none;
+          transition: transform 160ms ease, background 160ms ease;
+        }
+        .pill:hover { transform: translateY(-1px); background: rgba(255,255,255,0.10); color: var(--text); }
+
+        .grid {
+          margin-top: 22px;
+          display:grid;
+          grid-template-columns: repeat(12, 1fr);
+          gap: 14px;
+          padding: 0 40px 36px;
+        }
+
+        .card {
+          grid-column: span 4;
+          background: rgba(255,255,255,0.06);
+          border: 1px solid rgba(255,255,255,0.12);
+          border-radius: 18px;
+          padding: 18px;
+          box-shadow: 0 10px 26px rgba(0,0,0,0.22);
+          transition: transform 160ms ease, background 160ms ease, border 160ms ease;
+        }
+        .card:hover {
+          transform: translateY(-2px);
+          background: rgba(255,255,255,0.09);
+          border-color: rgba(255,255,255,0.22);
+        }
+        .card h3 {
+          margin: 6px 0 8px;
+          font-size: 16px;
+          letter-spacing: -0.2px;
+        }
+        .card p {
+          margin: 0;
+          color: var(--muted);
+          line-height: 1.5;
+          font-size: 14px;
+        }
+        .icon {
+          width: 34px;
+          height: 34px;
+          border-radius: 12px;
+          border: 1px solid rgba(255,255,255,0.16);
+          background: rgba(255,255,255,0.08);
+          display:flex;
+          align-items:center;
+          justify-content:center;
+          font-weight: 900;
+          color: rgba(255,255,255,0.85);
+        }
+
+        .split {
+          margin-top: 18px;
+          display:grid;
+          grid-template-columns: 1.2fr 0.8fr;
+          gap: 14px;
+          padding: 0 40px 40px;
+        }
+
+        .panel {
+          border-radius: 18px;
+          border: 1px solid rgba(255,255,255,0.12);
+          background: rgba(255,255,255,0.06);
+          padding: 18px;
+        }
+        .panelTitle {
+          margin: 0 0 8px;
+          font-size: 16px;
+          letter-spacing: -0.2px;
+        }
+        .panelText {
+          margin: 0;
+          color: var(--muted);
+          line-height: 1.6;
+          font-size: 14px;
+        }
+
+        .steps {
+          margin-top: 12px;
+          display:grid;
+          gap: 10px;
+        }
+        .step {
+          display:flex;
+          gap: 12px;
+          align-items:flex-start;
+          padding: 12px;
+          border-radius: 14px;
+          border: 1px solid rgba(255,255,255,0.12);
+          background: rgba(0,0,0,0.14);
+        }
+        .num {
+          width: 28px; height: 28px;
+          border-radius: 10px;
+          display:flex; align-items:center; justify-content:center;
+          font-weight: 900;
+          background: rgba(255,255,255,0.10);
+          border: 1px solid rgba(255,255,255,0.14);
+          color: rgba(255,255,255,0.86);
+          flex: 0 0 auto;
+        }
+        .step b { display:block; margin-bottom: 2px; }
+        .step span { color: var(--muted); font-size: 13px; line-height: 1.45; }
+
+        .footer {
+          padding: 22px 24px 30px;
+          text-align:center;
+          color: rgba(255,255,255,0.45);
+          font-size: 13px;
+        }
+
+        @media (max-width: 980px) {
+          .hero { padding: 36px 22px 22px; }
+          .grid { padding: 0 22px 28px; }
+          .split { padding: 0 22px 30px; grid-template-columns: 1fr; }
+          h1 { font-size: 38px; }
+          .card { grid-column: span 12; }
+        }
+    </style>
+</head>
+
+<body>
+<div class="nav">
+    <div class="brand">
+        <div class="logo"></div>
+        Coach Marketplace
+    </div>
+    <div>
+        <a href="/coaches">Browse</a>
+        <a href="/login">Login</a>
+        <a href="/register">Register</a>
+    </div>
+</div>
+
+<div class="container">
+    <div class="heroWrap">
+        <div class="heroGlow"></div>
+
+        <div class="hero">
+            <div class="badge">
+                <span class="dot"></span>
+                Directory-style marketplace for coaches
+            </div>
+
+            <h1>Showcase your coaching. Get discovered.</h1>
+            <p class="sub">
+                Coaches create a profile, list services, and publish offerings. Visitors can browse and search without an account.
+                Simple, clean, and built for deployment.
+            </p>
+
+            <div class="actionsRow">
+                <a class="btn primary" href="/register">Become a Coach</a>
+                <a class="btn" href="/coaches">Browse Coaches</a>
+            </div>
+
+            <div class="searchRow">
+                <div class="searchBox" title="Wire this later">
+                    <span style="opacity:.75;">🔎</span>
+                    <input type="text" placeholder="Search by name, sport, city (coming soon)" disabled />
+                </div>
+                <a class="btn" href="/coaches">Search</a>
+            </div>
+
+            <div class="pillRow">
+                <a class="pill" href="/coaches">Tennis</a>
+                <a class="pill" href="/coaches">Basketball</a>
+                <a class="pill" href="/coaches">Strength</a>
+                <a class="pill" href="/coaches">Remote</a>
+            </div>
+        </div>
+
+        <div class="grid">
+            <div class="card">
+                <div class="icon">⚡</div>
+                <h3>Fast to publish</h3>
+                <p>Create a profile, add services, and go live. No complicated setup.</p>
+            </div>
+
+            <div class="card">
+                <div class="icon">🎯</div>
+                <h3>Built for search</h3>
+                <p>Structure that makes filtering by category/location easy later.</p>
+            </div>
+
+            <div class="card">
+                <div class="icon">🔒</div>
+                <h3>Coach-only editing</h3>
+                <p>Authenticated coaches manage their own profile and services.</p>
+            </div>
+        </div>
+
+        <div class="split">
+            <div class="panel">
+                <h3 class="panelTitle">What visitors can do</h3>
+                <p class="panelText">Browse coach profiles, read bios, view services and pricing, and find coaches by what they offer.</p>
+            </div>
+
+            <div class="panel">
+                <h3 class="panelTitle">How it works</h3>
+                <div class="steps">
+                    <div class="step">
+                        <div class="num">1</div>
+                        <div>
+                            <b>Register as a coach</b>
+                            <span>Create your account to unlock editing.</span>
+                        </div>
+                    </div>
+                    <div class="step">
+                        <div class="num">2</div>
+                        <div>
+                            <b>Create your profile</b>
+                            <span>Add your bio, location, and rate basics.</span>
+                        </div>
+                    </div>
+                    <div class="step">
+                        <div class="num">3</div>
+                        <div>
+                            <b>List services</b>
+                            <span>Publish offerings visitors can browse.</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<div class="footer">
+    © <span th:text="${#dates.year(#dates.createNow())}">2026</span> Coach Marketplace
+</div>
 </body>
 </html>
