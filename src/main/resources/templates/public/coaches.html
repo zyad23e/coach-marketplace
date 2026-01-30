@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Browse Coaches</title>
+
+    <style>
+        body{
+            margin:0;
+            font-family: Arial, sans-serif;
+            background:#0b0e17;
+            color:#fff;
+            min-height:100vh;
+        }
+
+        .nav{
+            display:flex;
+            justify-content:space-between;
+            align-items:center;
+            padding:14px 22px;
+            border-bottom:1px solid rgba(255,255,255,0.10);
+            background: rgba(10, 12, 20, 0.55);
+            backdrop-filter: blur(12px);
+        }
+
+        .brand{
+            font-weight:800;
+            font-size:18px;
+        }
+
+        .nav a{
+            color:#fff;
+            text-decoration:none;
+            margin-left:16px;
+            font-weight:600;
+            opacity:.85;
+        }
+
+        .nav a:hover{ opacity:1; }
+
+        .container{
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 26px 20px 40px;
+        }
+
+        h1{
+            margin:0 0 6px;
+            font-size: 28px;
+        }
+
+        .sub{
+            margin:0 0 18px;
+            color: rgba(255,255,255,0.65);
+        }
+
+        .grid{
+            display:grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 18px;
+        }
+
+        .card{
+            border:1px solid rgba(255,255,255,0.12);
+            background: rgba(255,255,255,0.06);
+            border-radius: 16px;
+            padding: 18px;
+            box-shadow: 0 10px 26px rgba(0,0,0,0.25);
+            transition: transform 160ms ease, background 160ms ease, border 160ms ease;
+        }
+
+        .card:hover{
+            transform: translateY(-3px);
+            background: rgba(255,255,255,0.09);
+            border-color: rgba(255,255,255,0.22);
+        }
+
+        .top{
+            display:flex;
+            gap:14px;
+            align-items:center;
+            margin-bottom:10px;
+        }
+
+        .avatar{
+            width:64px;
+            height:64px;
+            border-radius:16px;
+            overflow:hidden;
+            background: rgba(255,255,255,0.08);
+            border:1px solid rgba(255,255,255,0.18);
+            flex-shrink:0;
+            display:flex;
+            align-items:center;
+            justify-content:center;
+        }
+
+        .avatar img{
+            width:100%;
+            height:100%;
+            object-fit:cover;
+            display:block;
+        }
+
+        .avatar .fallback{
+            font-size:11px;
+            font-weight:900;
+            color: rgba(255,255,255,0.55);
+            text-align:center;
+            line-height:1.2;
+            padding: 8px;
+        }
+
+        .name{
+            font-weight:800;
+            font-size:16px;
+        }
+
+        .loc{
+            font-size:13px;
+            color: rgba(255,255,255,0.6);
+            margin-top:2px;
+        }
+
+        .bio{
+            font-size:14px;
+            color: rgba(255,255,255,0.7);
+            line-height:1.5;
+            margin:10px 0 14px;
+        }
+
+        .meta{
+            font-size:13px;
+            font-weight:800;
+            color:#b6ffd7;
+            margin-bottom:12px;
+        }
+
+        .btn{
+            display:inline-block;
+            padding: 10px 12px;
+            border-radius: 12px;
+            text-decoration:none;
+            font-weight: 800;
+            font-size: 14px;
+            color:#0b0e17;
+            background: linear-gradient(135deg, #7c5cff, #4de0c3);
+        }
+
+        .empty{
+            border:1px dashed rgba(255,255,255,0.18);
+            background: rgba(255,255,255,0.04);
+            border-radius: 16px;
+            padding: 22px;
+            color: rgba(255,255,255,0.65);
+        }
+
+        @media (max-width: 1000px){
+            .grid{ grid-template-columns: repeat(2, 1fr); }
+        }
+
+        @media (max-width: 650px){
+            .grid{ grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="nav">
+    <div class="brand">Coaches</div>
+    <div>
+        <a href="/">Home</a>
+        <a href="/login">Coach Login</a>
+    </div>
+</div>
+
+<div class="container">
+    <h1>Browse Coaches</h1>
+    <p class="sub">Find a coach and view their profile and services.</p>
+
+    <div class="empty" th:if="${coaches == null or #lists.isEmpty(coaches)}">
+        No coaches have published profiles yet.
+    </div>
+
+    <div class="grid" th:if="${coaches != null and !#lists.isEmpty(coaches)}">
+        <div class="card" th:each="c : ${coaches}">
+
+            <div class="top">
+                <div class="avatar">
+                    <img th:if="${c.profileImagePath != null}"
+                         th:src="${c.profileImagePath}" alt="Profile">
+
+                    <div class="fallback" th:if="${c.profileImagePath == null}">
+                        No<br>Photo
+                    </div>
+                </div>
+
+                <div>
+                    <div class="name" th:text="${c.displayName}">Coach Name</div>
+
+                    <!-- location: only show if present -->
+                    <div class="loc"
+                         th:if="${c.location != null and !#strings.isEmpty(c.location)}"
+                         th:text="${c.location}">
+                        Location
+                    </div>
+
+                    <div class="loc"
+                         th:if="${c.location == null or #strings.isEmpty(c.location)}">
+                        Remote / Location not listed
+                    </div>
+                </div>
+            </div>
+
+            <div class="bio"
+                 th:text="${c.bio != null ? (#strings.length(c.bio) > 140 ? #strings.substring(c.bio,0,140) + '…' : c.bio) : 'No bio yet.'}">
+                Bio preview…
+            </div>
+
+            <a class="btn" th:href="@{/coach/profile/{id}(id=${c.id})}">
+                View Profile
+            </a>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>

@@ -3,17 +3,19 @@ package com.zyad.coachmarketplace.controller;
 import com.zyad.coachmarketplace.entity.Role;
 import com.zyad.coachmarketplace.entity.User;
 import com.zyad.coachmarketplace.repository.UsersRepository;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.*;
 
 @Controller
 public class UserController {
 
-    private UsersRepository usersRepository;
+    private final UsersRepository usersRepository;
+    private final PasswordEncoder passwordEncoder;
 
-    public UserController(UsersRepository usersRepository){
+    public UserController(UsersRepository usersRepository, PasswordEncoder passwordEncoder){
         this.usersRepository = usersRepository;
+        this.passwordEncoder = passwordEncoder;
     }
 
     @GetMapping("/register")
@@ -22,9 +24,20 @@ public class UserController {
     }
 
     @PostMapping("/register")
-    public String registerUser(User user){
+    public String registerUser(@ModelAttribute User user){
+        if (usersRepository.findByEmail(user.getEmail()).isPresent()) {
+            return "redirect:/register?error";
+        }
+
         user.setRole(Role.COACH);
-        User savedUser = usersRepository.save(user);
-        return "redirect:/coach/dashboard";
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
+        usersRepository.save(user);
+
+        return "redirect:/login?registered";
+    }
+
+    @GetMapping("/login")
+    public String login() {
+        return "auth/login";
     }
 }

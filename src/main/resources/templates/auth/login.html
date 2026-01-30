@@ -1,10 +1,71 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login</title>
 
+    <style>
+        body { margin:0; font-family: Arial, sans-serif; background:#0b0e17; color:#fff; min-height:100vh;
+            display:flex; align-items:center; justify-content:center; }
+        .card { width:100%; max-width:420px; background:#111528; border:1px solid #1e2340; border-radius:16px;
+            padding:28px; box-shadow: 0 20px 50px rgba(0,0,0,0.5); }
+        h1 { margin:0 0 16px; font-size:24px; text-align:center; }
+        .msg { margin-bottom:12px; font-size:13px; text-align:center; padding:10px; border-radius:10px; }
+        .err { background: rgba(255, 80, 80, 0.15); color: #ffb4b4; border: 1px solid rgba(255, 80, 80, 0.35); }
+        .ok  { background: rgba(80, 255, 160, 0.12); color: #b6ffd7; border: 1px solid rgba(80, 255, 160, 0.25); }
+        .field { margin-bottom:14px; display:flex; flex-direction:column; }
+        label { font-size:13px; margin-bottom:6px; color:#bfc7ff; }
+        input { padding:12px; border-radius:10px; border:1px solid #2a2f55; background:#0e1230; color:#fff;
+            font-size:14px; outline:none; }
+        input:focus { border-color:#6c7bff; }
+        .btn { width:100%; margin-top:10px; padding:13px; border-radius:12px; border:none; font-weight:bold;
+            font-size:15px; cursor:pointer; background: linear-gradient(135deg, #7c5cff, #4de0c3);
+            color:#0b0e17; }
+        .btn:hover { opacity:.95; }
+        .footer { margin-top:14px; text-align:center; font-size:13px; color:#9aa3d8; }
+        .footer a { color:#9aa3ff; text-decoration:none; }
+    </style>
+</head>
+
+<body>
+<div class="card">
+    <h1>Coach Login</h1>
+
+    <div class="msg err" th:if="${param.error}">
+        Invalid email or password.
+    </div>
+
+    <div class="msg ok" th:if="${param.logout}">
+        You’ve been logged out.
+    </div>
+
+    <div class="msg ok" th:if="${param.registered}">
+        Account created. Please log in.
+    </div>
+
+    <form method="post" action="/login">
+        <!-- REQUIRED for Spring Security POST -->
+        <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
+
+        <div class="field">
+            <label>Email</label>
+            <!-- Spring Security expects "username" by default -->
+            <input type="email" name="username" required>
+        </div>
+
+        <div class="field">
+            <label>Password</label>
+            <input type="password" name="password" required>
+        </div>
+
+        <button class="btn" type="submit">Login</button>
+    </form>
+
+    <div class="footer">
+        Don’t have an account?
+        <a href="/register">Register</a>
+    </div>
+</div>
 </body>
 </html>

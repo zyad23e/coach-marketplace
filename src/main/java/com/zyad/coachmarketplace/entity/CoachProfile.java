@@ -12,16 +12,43 @@ public class CoachProfile {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private int id;
 
     private String displayName;
 
     @Column(length = 2000)
     private String bio;
 
-    private String city;
-    private String state;
-    private String country;
+    private String location;
+    private String contactEmail;
+    private String contactNumber;
+
+    public String getContactEmail() {
+        return contactEmail;
+    }
+
+    public void setContactEmail(String contactEmail) {
+        this.contactEmail = contactEmail;
+    }
+
+    public String getContactNumber() {
+        return contactNumber;
+    }
+
+    public void setContactNumber(String contactNumber) {
+        this.contactNumber = contactNumber;
+    }
+
+    @Column(name = "profile_image_path")
+    private String profileImagePath;
+
+    public String getProfileImagePath() {
+        return profileImagePath;
+    }
+
+    public void setProfileImagePath(String profileImagePath) {
+        this.profileImagePath = profileImagePath;
+    }
 
     private BigDecimal hourlyRate;
 
@@ -31,28 +58,12 @@ public class CoachProfile {
     //      User this field holds a User entity object
     private User user;
 
-    public String getCity() {
-        return city;
+    public String getLocation() {
+        return location;
     }
 
-    public void setCity(String city) {
-        this.city = city;
-    }
-
-    public String getState() {
-        return state;
-    }
-
-    public void setState(String state) {
-        this.state = state;
-    }
-
-    public String getCountry() {
-        return country;
-    }
-
-    public void setCountry(String country) {
-        this.country = country;
+    public void setLocation(String location) {
+        this.location = location;
     }
 
     public User getUser() {
@@ -63,11 +74,11 @@ public class CoachProfile {
         this.user = user;
     }
 
-    public Long getId() {
+    public int getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(int id) {
         this.id = id;
     }
 
@@ -101,9 +112,10 @@ public class CoachProfile {
                 "id=" + id +
                 ", displayName='" + displayName + '\'' +
                 ", bio='" + bio + '\'' +
-                ", city='" + city + '\'' +
-                ", state='" + state + '\'' +
-                ", country='" + country + '\'' +
+                ", location='" + location + '\'' +
+                ", contactEmail='" + contactEmail + '\'' +
+                ", contactNumber='" + contactNumber + '\'' +
+                ", profileImagePath='" + profileImagePath + '\'' +
                 ", hourlyRate=" + hourlyRate +
                 ", user=" + user +
                 '}';

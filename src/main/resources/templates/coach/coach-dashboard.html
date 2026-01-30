@@ -47,11 +47,14 @@
         }
 
         .hero{
+            position: relative;
             border:1px solid rgba(255,255,255,0.12);
             background: rgba(255,255,255,0.06);
             border-radius: 18px;
             padding: 22px;
             box-shadow: 0 18px 50px rgba(0,0,0,0.45);
+            overflow: hidden;
+            min-height: 110px;
         }
 
         h1{
@@ -63,6 +66,38 @@
             margin:0;
             color: rgba(255,255,255,0.65);
             line-height:1.5;
+            max-width: 720px;
+        }
+
+        .avatarWrap{
+            position: absolute;
+            top: 18px;
+            right: 18px;
+            width: 92px;
+            height: 92px;
+            border-radius: 18px;
+            border: 1px solid rgba(255,255,255,0.18);
+            background: rgba(255,255,255,0.06);
+            display:flex;
+            align-items:center;
+            justify-content:center;
+            overflow:hidden;
+        }
+
+        .avatarWrap img{
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display:block;
+        }
+
+        .avatarPlaceholder{
+            font-weight: 800;
+            color: rgba(255,255,255,0.55);
+            font-size: 12px;
+            text-align:center;
+            padding: 10px;
+            line-height: 1.2;
         }
 
         .grid{
@@ -135,6 +170,14 @@
             .grid{
                 grid-template-columns: 1fr;
             }
+            .hero{
+                padding-right: 22px;
+                min-height: 150px;
+            }
+            .avatarWrap{
+                top: 16px;
+                right: 16px;
+            }
         }
     </style>
 </head>
@@ -144,13 +187,26 @@
     <div class="brand">Coach Dashboard</div>
     <div>
         <a href="/coaches">Browse Public</a>
-        <a href="/">Home</a>
+        <a href="/">Logout</a>
     </div>
 </div>
 
 <div class="container">
 
     <div class="hero">
+
+        <!-- Top-right avatar -->
+        <div class="avatarWrap">
+            <img th:if="${coachProfile != null and coachProfile.profileImagePath != null}"
+                 th:src="${coachProfile.profileImagePath}"
+                 alt="Profile Picture">
+
+            <div class="avatarPlaceholder"
+                 th:if="${coachProfile == null or coachProfile.profileImagePath == null}">
+                No<br>Photo
+            </div>
+        </div>
+
         <h1>Welcome, Coach 👋</h1>
         <p class="sub">
             Create and manage your coaching services. Visitors can browse everything you publish without needing an account.
@@ -183,7 +239,7 @@
             <div>
                 <h3>Coach Profile (About Me)</h3>
                 <p>
-                    Update your public name, bio, and location so visitors know who you are and where you coach.
+                    Update your public name, bio, location, hourly rate, and profile photo.
                 </p>
             </div>
             <a class="btn secondary" href="/coach/profile/new">Edit Profile</a>

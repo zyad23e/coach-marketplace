@@ -1,43 +1,212 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
-    <title>Coach Profile</title>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Coach Profile</title>
+
+    <style>
+        body{
+            margin:0;
+            font-family: Arial, sans-serif;
+            background:#0b0e17;
+            color:#fff;
+            min-height:100vh;
+        }
+
+        .container{
+            max-width: 980px;
+            margin: 40px auto;
+            padding: 24px;
+        }
+
+        .card{
+            border:1px solid rgba(255,255,255,0.12);
+            background: rgba(255,255,255,0.06);
+            border-radius: 18px;
+            padding: 22px;
+            box-shadow: 0 14px 34px rgba(0,0,0,0.28);
+        }
+
+        .top{
+            display:flex;
+            gap:16px;
+            align-items:center;
+            flex-wrap:wrap;
+        }
+
+        .avatar{
+            width:92px;
+            height:92px;
+            border-radius:18px;
+            overflow:hidden;
+            background: rgba(255,255,255,0.08);
+            border:1px solid rgba(255,255,255,0.18);
+            display:flex;
+            align-items:center;
+            justify-content:center;
+            flex-shrink:0;
+        }
+
+        .avatar img{
+            width:100%;
+            height:100%;
+            object-fit:cover;
+        }
+
+        .fallback{
+            font-size:12px;
+            font-weight:900;
+            color: rgba(255,255,255,0.55);
+            text-align:center;
+            line-height:1.2;
+        }
+
+        h1{
+            margin:0;
+            font-size:26px;
+            font-weight:900;
+        }
+
+        .loc{
+            margin-top:6px;
+            color: rgba(255,255,255,0.65);
+            font-weight:700;
+        }
+
+        .tagRow{
+            margin-top:12px;
+            display:flex;
+            gap:8px;
+            flex-wrap:wrap;
+        }
+
+        .tag{
+            padding:6px 10px;
+            border-radius:999px;
+            border:1px solid rgba(255,255,255,0.16);
+            background: rgba(255,255,255,0.06);
+            color:#b6ffd7;
+            font-size:12px;
+            font-weight:900;
+        }
+
+        .section{
+            margin-top:20px;
+        }
+
+        .label{
+            font-size:13px;
+            color:#bfc7ff;
+            font-weight:900;
+            margin-bottom:8px;
+        }
+
+        .bio{
+            color: rgba(255,255,255,0.8);
+            line-height:1.6;
+        }
+
+        .services{
+            margin-top:10px;
+            display:grid;
+            gap:12px;
+        }
+
+        .serviceCard{
+            border:1px solid rgba(255,255,255,0.12);
+            background: rgba(255,255,255,0.06);
+            border-radius:16px;
+            padding:16px;
+        }
+
+        .serviceTitle{
+            margin:0 0 6px;
+            font-weight:900;
+        }
+
+        .back{
+            margin-top:20px;
+            display:inline-block;
+            padding:10px 14px;
+            border-radius:12px;
+            text-decoration:none;
+            font-weight:900;
+            background: rgba(255,255,255,0.12);
+            color:#fff;
+            border:1px solid rgba(255,255,255,0.18);
+        }
+    </style>
 </head>
 <body>
 
-<h1>Coach Profile</h1>
+<div class="container">
+    <div class="card">
 
-<div>
-    <strong>Name:</strong>
-    <span th:text="${profile.displayName}">Name goes here</span>
+        <div class="top">
+            <div class="avatar">
+                <img th:if="${profile.profileImagePath != null}"
+                     th:src="${profile.profileImagePath}">
+                <div class="fallback" th:if="${profile.profileImagePath == null}">
+                    No<br>Photo
+                </div>
+            </div>
+
+            <div>
+                <h1 th:text="${profile.displayName}">Coach Name</h1>
+
+                <div class="loc"
+                     th:if="${profile.location != null and !#strings.isEmpty(profile.location)}"
+                     th:text="${profile.location}">
+                    Location
+                </div>
+
+                <div class="tagRow">
+                    <!-- contact email -->
+                    <span class="tag"
+                          th:if="${profile.contactEmail != null and !#strings.isEmpty(profile.contactEmail)}"
+                          th:text="${profile.contactEmail}">
+                        email@example.com
+                    </span>
+
+                    <!-- contact number -->
+                    <span class="tag"
+                          th:if="${profile.contactNumber != null and !#strings.isEmpty(profile.contactNumber)}"
+                          th:text="${profile.contactNumber}">
+                        480-123-4567
+                    </span>
+                </div>
+            </div>
+        </div>
+
+        <div class="section">
+            <div class="label">Bio</div>
+            <div class="bio" th:text="${profile.bio}">Bio here</div>
+        </div>
+
+        <div class="section">
+            <div class="label">Services</div>
+
+            <div class="services"
+                 th:if="${services != null and !#lists.isEmpty(services)}">
+                <div class="serviceCard" th:each="s : ${services}">
+                    <div class="serviceTitle" th:text="${s.title}">Service Title</div>
+                    <div class="bio" th:text="${s.description}">Description</div>
+                    <div class="bio" th:text="'$' + ${s.price} + '/hr'">Hourly Rate</div>
+
+                </div>
+            </div>
+
+            <div class="bio"
+                 th:if="${services == null or #lists.isEmpty(services)}">
+                No services published yet.
+            </div>
+        </div>
+
+        <a href="/coaches" class="back">Back</a>
+
+    </div>
 </div>
-
-<br>
-
-<div>
-    <strong>Bio:</strong><br>
-    <span th:text="${profile.bio}">Bio goes here</span>
-</div>
-
-<br>
-
-<div>
-    <strong>Hourly Rate:</strong>
-    $<span th:text="${profile.hourlyRate}">0</span>
-</div>
-
-<br>
-
-<div>
-    <strong>Category:</strong>
-    <span th:text="${profile.category}">Category goes here</span>
-</div>
-
-<br><br>
-
-<a href="/coach/profile/new">Create another profile</a>
 
 </body>
 </html>
->

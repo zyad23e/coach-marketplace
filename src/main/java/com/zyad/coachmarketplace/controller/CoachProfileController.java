@@ -1,47 +1,101 @@
 package com.zyad.coachmarketplace.controller;
 
 import com.zyad.coachmarketplace.entity.CoachProfile;
+import com.zyad.coachmarketplace.entity.CoachService;
+import com.zyad.coachmarketplace.entity.User;
 import com.zyad.coachmarketplace.repository.CoachProfileRepository;
+import com.zyad.coachmarketplace.repository.CoachServiceRepository;
+import com.zyad.coachmarketplace.repository.UsersRepository;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.io.IOException;
+import java.nio.file.*;
+import java.util.List;
+import java.util.UUID;
 
 @Controller
 public class CoachProfileController {
 
-    // by injecting this repository, it will allow our controller to call SQL
-    // operations here such as save, find, etc...
-    private CoachProfileRepository coachProfileRepository;
+    private final CoachProfileRepository coachProfileRepository;
+    private final CoachServiceRepository coachServiceRepository;
+    private final UsersRepository usersRepository;
 
-    public CoachProfileController(CoachProfileRepository coachProfileRepository){
+    public CoachProfileController(CoachProfileRepository coachProfileRepository,
+            CoachServiceRepository coachServiceRepository,
+            UsersRepository usersRepository) {
         this.coachProfileRepository = coachProfileRepository;
+        this.coachServiceRepository = coachServiceRepository;
+        this.usersRepository = usersRepository;
     }
 
-    // show an empty coach form for client to fill out
     @GetMapping("/coach/profile/new")
-    public String coach(){
+    public String coach(Model model, Authentication authentication) {
+        User user = usersRepository.findByEmail(authentication.getName()).orElseThrow();
+        CoachProfile existing = coachProfileRepository.findByUser(user);
+        model.addAttribute("coachProfile", existing);
         return "coach/profile-form";
     }
 
-    // save new coach, "html form says when i am submitted, send a POST request here."
-    // remember, when getmapping is called, the actual form for coach information is called from the profile-form.html,
-    // when that form is submitted, the browser sends a POST request(this here method), which receives the input values from the form.
-    @PostMapping("/coach/profile/new")
-    public String newCoach(CoachProfile coachProfile){ // form values submitted by coach are then set in coachProfile entity using setters methods.
-        CoachProfile saved = coachProfileRepository.save(coachProfile); // reads the values back from coachProfile using getter methods and performs SQL to save to the database.
-        return "redirect:/coach/profile/" + saved.getId();
+    @PostMapping("/coach/profile")
+    public String createProfile(@ModelAttribute CoachProfile coachProfile,
+            @RequestParam("profileImage") MultipartFile profileImage,
+            Authentication authentication) {
+
+        try {
+            User user = usersRepository.findByEmail(authentication.getName()).orElseThrow();
+            CoachProfile existing = coachProfileRepository.findByUser(user);
+
+            coachProfile.setUser(user);
+            if (existing != null) {
+                coachProfile.setId(existing.getId()); // needs setId in CoachProfile
+            }
+
+            if (profileImage != null && !profileImage.isEmpty()) {
+                Path uploadDir = Paths.get("uploads/profile-pics");
+                Files.createDirectories(uploadDir);
+
+                String originalName = profileImage.getOriginalFilename();
+                String ext = "";
+                if (originalName != null && originalName.contains(".")) {
+                    ext = originalName.substring(originalName.lastIndexOf("."));
+                }
+
+                String filename = UUID.randomUUID().toString() + ext;
+                Path filePath = uploadDir.resolve(filename);
+
+                Files.copy(profileImage.getInputStream(), filePath, StandardCopyOption.REPLACE_EXISTING);
+                coachProfile.setProfileImagePath("/uploads/profile-pics/" + filename);
+            } else {
+                if (existing != null) {
+                    coachProfile.setProfileImagePath(existing.getProfileImagePath());
+                }
+            }
+
+            coachProfileRepository.save(coachProfile);
+
+        } catch (IOException e) {
+            e.printStackTrace();
+            return "redirect:/coach/profile/new";
+        }
+
+        return "redirect:/coach/dashboard";
     }
 
     @GetMapping("/coach/profile/{id}")
-    // @PathVariable gives is the {id} int from the URL so we can use it.
-    public String getCoachProfile(@PathVariable int id, Model model){
-        CoachProfile profile = coachProfileRepository.findById(id).orElseThrow(() -> new RuntimeException("Coach profile not found"));
+    public String getCoachProfile(@PathVariable int id, Model model) {
 
-        // the coachProfile profile entity is now saved into a Model factory, we can get information from this model by referencing the
-        // object name in our html form which calls getter methods since the object is already populated.
+        CoachProfile profile = coachProfileRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Coach profile not found"));
+
+        List<CoachService> services =
+                coachServiceRepository.findByCoachProfileOrderByIdDesc(profile);
+
         model.addAttribute("profile", profile);
+        model.addAttribute("services", services);
 
         return "coach/profile-view";
     }
