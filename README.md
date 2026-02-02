@@ -1,5 +1,7 @@
 # Coach Marketplace Web Application
 
+Live Demo: http://coach-marketplace.us-east-1.elasticbeanstalk.com/
+
 A full-stack web application that allows coaches to create a public profile and publish multiple coaching services that anyone can browse.
 
 Built to demonstrate backend-focused development with Spring Boot, secure authentication, relational data modeling, and server-side rendered views.
